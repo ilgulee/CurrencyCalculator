@@ -3,23 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@+id/navigation_conversion_list">
 
     <fragment
-        android:id="@+id/navigation_home"
-        android:name="ilgulee.com.currencycalculator.ui.home.HomeFragment"
-        android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        android:id="@+id/navigation_conversion_list"
+        android:name="ilgulee.com.currencycalculator.ui.list.ConversionListFragment"
+        android:label="@string/title_conversion_list"
+        tools:layout="@layout/fragment_conversion_list" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="ilgulee.com.currencycalculator.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        android:id="@+id/navigation_rate_calculator"
+        android:name="ilgulee.com.currencycalculator.ui.calculator.RateCalculatorFragment"
+        android:label="@string/title_rate_calculator"
+        tools:layout="@layout/fragment_rate_calculator" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="ilgulee.com.currencycalculator.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        android:id="@+id/navigation_setting"
+        android:name="ilgulee.com.currencycalculator.ui.setting.SettingFragment"
+        android:label="@string/title_setting"
+        tools:layout="@layout/fragment_setting" />
 </navigation>

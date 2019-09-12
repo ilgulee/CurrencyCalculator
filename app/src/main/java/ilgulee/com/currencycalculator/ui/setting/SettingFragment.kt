@@ -1,4 +1,4 @@
-package ilgulee.com.currencycalculator.ui.notifications
+package ilgulee.com.currencycalculator.ui.setting
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,20 +10,20 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import ilgulee.com.currencycalculator.R
 
-class NotificationsFragment : Fragment() {
+class SettingFragment : Fragment() {
 
-    private lateinit var notificationsViewModel: NotificationsViewModel
+    private lateinit var settingViewModel: SettingViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        notificationsViewModel =
-            ViewModelProviders.of(this).get(NotificationsViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_notifications, container, false)
+        settingViewModel =
+            ViewModelProviders.of(this).get(SettingViewModel::class.java)
+        val root = inflater.inflate(R.layout.fragment_setting, container, false)
         val textView: TextView = root.findViewById(R.id.text_notifications)
-        notificationsViewModel.text.observe(this, Observer {
+        settingViewModel.text.observe(this, Observer {
             textView.text = it
         })
         return root

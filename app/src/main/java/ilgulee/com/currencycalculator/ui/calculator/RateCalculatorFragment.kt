@@ -1,4 +1,4 @@
-package ilgulee.com.currencycalculator.ui.dashboard
+package ilgulee.com.currencycalculator.ui.calculator
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,20 +10,20 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import ilgulee.com.currencycalculator.R
 
-class DashboardFragment : Fragment() {
+class RateCalculatorFragment : Fragment() {
 
-    private lateinit var dashboardViewModel: DashboardViewModel
+    private lateinit var rateCalculatorViewModel: RateCalculatorViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        dashboardViewModel =
-            ViewModelProviders.of(this).get(DashboardViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_dashboard, container, false)
+        rateCalculatorViewModel =
+            ViewModelProviders.of(this).get(RateCalculatorViewModel::class.java)
+        val root = inflater.inflate(R.layout.fragment_rate_calculator, container, false)
         val textView: TextView = root.findViewById(R.id.text_dashboard)
-        dashboardViewModel.text.observe(this, Observer {
+        rateCalculatorViewModel.text.observe(this, Observer {
             textView.text = it
         })
         return root

@@ -1,10 +1,10 @@
-package ilgulee.com.currencycalculator.ui.dashboard
+package ilgulee.com.currencycalculator.ui.calculator
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class DashboardViewModel : ViewModel() {
+class RateCalculatorViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
         value = "This is dashboard Fragment"
