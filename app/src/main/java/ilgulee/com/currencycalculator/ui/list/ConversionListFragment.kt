@@ -4,28 +4,31 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import ilgulee.com.currencycalculator.R
+import ilgulee.com.currencycalculator.databinding.FragmentConversionListBinding
 
 class ConversionListFragment : Fragment() {
 
-    private lateinit var conversionListViewModel: ConversionListViewModel
+    private val conversionListViewModel: ConversionListViewModel by lazy {
+        ViewModelProviders.of(this).get(ConversionListViewModel::class.java)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        conversionListViewModel =
-            ViewModelProviders.of(this).get(ConversionListViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_conversion_list, container, false)
-        val textView: TextView = root.findViewById(R.id.text_home)
-        conversionListViewModel.text.observe(this, Observer {
-            textView.text = it
-        })
-        return root
+        val binding = DataBindingUtil.inflate<FragmentConversionListBinding>(
+            inflater,
+            R.layout.fragment_conversion_list,
+            container,
+            false
+        )
+        binding.conversionListViewModel = conversionListViewModel
+        binding.setLifecycleOwner(this)
+        return binding.root
     }
 }
