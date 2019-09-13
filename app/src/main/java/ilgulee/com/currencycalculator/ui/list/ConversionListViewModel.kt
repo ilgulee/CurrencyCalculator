@@ -3,40 +3,43 @@ package ilgulee.com.currencycalculator.ui.list
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import ilgulee.com.currencycalculator.domain.LiveQuote
 import ilgulee.com.currencycalculator.network.CurrencyLayerApiObject
-import ilgulee.com.currencycalculator.network.NetworkResponseLiveListObject
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import ilgulee.com.currencycalculator.network.asLiveQuoteDomainModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import java.io.IOException
 
 class ConversionListViewModel : ViewModel() {
     private val key = "a1333d0832b1208792fdd9bd929adcf8"
     private val source = "JPY"
 
-    private val _response = MutableLiveData<String>()
-    val response: LiveData<String> = _response
+    private val _response = MutableLiveData<LiveQuote>()
+    val response: LiveData<LiveQuote> = _response
+    private var viewModelJob = Job()
+    private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
     init {
         getLiveList()
     }
 
     private fun getLiveList() {
-        CurrencyLayerApiObject
-            .currencyLayerApiService.getLiveList(key, source)
-            .enqueue(object : Callback<NetworkResponseLiveListObject> {
-                override fun onFailure(call: Call<NetworkResponseLiveListObject>, t: Throwable) {
-                    _response.value = "Failure: ${t.message}"
-            }
+        coroutineScope.launch {
+            val deferredCurrencyLayerApiService = CurrencyLayerApiObject
+                .currencyLayerApiService.getLiveList(key, source)
+            try {
+                val liveList = deferredCurrencyLayerApiService.await()
+                _response.postValue(liveList.asLiveQuoteDomainModel())
+            } catch (networkError: IOException) {
 
-                override fun onResponse(
-                    call: Call<NetworkResponseLiveListObject>,
-                    response: Response<NetworkResponseLiveListObject>
-                ) {
-                if (response.isSuccessful) {
-                    _response.value =
-                        "Success: retrieved ${response.body()?.quotes?.size.toString()} quotes"
-                }
             }
-        })
+        }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        viewModelJob.cancel()
     }
 }

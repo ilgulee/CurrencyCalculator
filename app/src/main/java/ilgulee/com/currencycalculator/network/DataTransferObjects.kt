@@ -1,6 +1,7 @@
 package ilgulee.com.currencycalculator.network
 
 import com.squareup.moshi.Json
+import ilgulee.com.currencycalculator.domain.LiveQuote
 
 
 data class NetworkResponseLiveListObject(
@@ -11,8 +12,12 @@ data class NetworkResponseLiveListObject(
     @Json(name = "timestamp")
     val timestamp: Long,
     @Json(name = "quotes")
-    val quotes: MutableMap<String, Float> = mutableMapOf()
+    val quotes: Map<String, Float> = mutableMapOf()
 )
+
+fun NetworkResponseLiveListObject.asLiveQuoteDomainModel(): LiveQuote {
+    return LiveQuote(this.source, this.timestamp, this.quotes)
+}
 
 data class NetworkResponseConvertCurrencyObject(
     @Json(name = "info")

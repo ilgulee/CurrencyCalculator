@@ -4,10 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import ilgulee.com.currencycalculator.network.CurrencyLayerApiObject
-import ilgulee.com.currencycalculator.network.NetworkResponseConvertCurrencyObject
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import java.io.IOException
 
 class RateCalculatorViewModel : ViewModel() {
 
@@ -18,32 +19,29 @@ class RateCalculatorViewModel : ViewModel() {
 
     private val _response = MutableLiveData<String>()
     val response: LiveData<String> = _response
+    private var viewModelJob = Job()
+    private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
     init {
         getConvert()
     }
 
     private fun getConvert() {
-        CurrencyLayerApiObject
-            .currencyLayerApiService
-            .convertCurrency(key, source, destination, amount)
-            .enqueue(object : Callback<NetworkResponseConvertCurrencyObject> {
-                override fun onFailure(
-                    call: Call<NetworkResponseConvertCurrencyObject>,
-                    t: Throwable
-                ) {
-                    _response.value = t.message
-                }
-
-                override fun onResponse(
-                    call: Call<NetworkResponseConvertCurrencyObject>,
-                    response: Response<NetworkResponseConvertCurrencyObject>
-                ) {
-                    if (response.isSuccessful) {
-                        _response.value = response.body().toString()
-                    }
-                }
-            })
+        coroutineScope.launch {
+            val deferredNetworkResponseConvertCurrencyObject = CurrencyLayerApiObject
+                .currencyLayerApiService.convertCurrency(key, source, destination, amount)
+            try {
+                val convertCurrency = deferredNetworkResponseConvertCurrencyObject.await()
+                _response.value =
+                    "Success: retrieved ${convertCurrency}"
+            } catch (networkError: IOException) {
+                _response.value = "Failure: ${networkError.message}"
+            }
+        }
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        viewModelJob.cancel()
+    }
 }
