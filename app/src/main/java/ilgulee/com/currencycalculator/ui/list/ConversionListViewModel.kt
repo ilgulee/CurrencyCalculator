@@ -21,7 +21,18 @@ class ConversionListViewModel : ViewModel() {
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
+    private var _eventNetworkError = MutableLiveData<Boolean>()
+    val eventNetworkError: LiveData<Boolean>
+        get() = _eventNetworkError
+
+    private var _isNetworkErrorShown = MutableLiveData<Boolean>()
+    val isNetworkErrorShown: LiveData<Boolean>
+        get() = _isNetworkErrorShown
+
+
     init {
+        _eventNetworkError.value = false
+        _isNetworkErrorShown.value = false
         getLiveList()
     }
 
@@ -32,10 +43,16 @@ class ConversionListViewModel : ViewModel() {
             try {
                 val liveList = deferredCurrencyLayerApiService.await()
                 _response.postValue(liveList.asLiveQuoteDomainModel())
+                _eventNetworkError.value = false
+                _isNetworkErrorShown.value = false
             } catch (networkError: IOException) {
-
+                _eventNetworkError.value = true
             }
         }
+    }
+
+    fun onNetworkErrorShown() {
+        _isNetworkErrorShown.value = true
     }
 
     override fun onCleared() {

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -14,7 +15,7 @@ import ilgulee.com.currencycalculator.databinding.FragmentConversionListBinding
 
 class ConversionListFragment : Fragment() {
 
-    private val conversionListViewModel: ConversionListViewModel by lazy {
+    private val viewModel: ConversionListViewModel by lazy {
         ViewModelProviders.of(this).get(ConversionListViewModel::class.java)
     }
 
@@ -29,15 +30,25 @@ class ConversionListFragment : Fragment() {
             container,
             false
         )
-        binding.conversionListViewModel = conversionListViewModel
+        binding.conversionListViewModel = viewModel
         binding.setLifecycleOwner(this)
         val adapter = ConversionListAdapter()
         binding.conversionList.adapter = adapter
-        conversionListViewModel.response.observe(viewLifecycleOwner, Observer {
+        viewModel.response.observe(viewLifecycleOwner, Observer {
             it?.let {
                 adapter.data = it.quotes as MutableMap<String, Float>
             }
         })
+        viewModel.eventNetworkError.observe(this, Observer<Boolean> { isNetworkError ->
+            if (isNetworkError) onNetworkError()
+        })
         return binding.root
+    }
+
+    private fun onNetworkError() {
+        if (!viewModel.isNetworkErrorShown.value!!) {
+            Toast.makeText(activity, "Network Error", Toast.LENGTH_LONG).show()
+            viewModel.onNetworkErrorShown()
+        }
     }
 }

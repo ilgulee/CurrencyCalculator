@@ -21,8 +21,17 @@ class RateCalculatorViewModel : ViewModel() {
     val response: LiveData<String> = _response
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
+    private var _eventNetworkError = MutableLiveData<Boolean>()
+    val eventNetworkError: LiveData<Boolean>
+        get() = _eventNetworkError
+
+    private var _isNetworkErrorShown = MutableLiveData<Boolean>()
+    val isNetworkErrorShown: LiveData<Boolean>
+        get() = _isNetworkErrorShown
 
     init {
+        _eventNetworkError.value = false
+        _isNetworkErrorShown.value = false
         getConvert()
     }
 
@@ -34,10 +43,17 @@ class RateCalculatorViewModel : ViewModel() {
                 val convertCurrency = deferredNetworkResponseConvertCurrencyObject.await()
                 _response.value =
                     "Success: retrieved ${convertCurrency}"
+                _eventNetworkError.value = false
+                _isNetworkErrorShown.value = false
             } catch (networkError: IOException) {
                 _response.value = "Failure: ${networkError.message}"
+                _eventNetworkError.value = true
             }
         }
+    }
+
+    fun onNetworkErrorShown() {
+        _isNetworkErrorShown.value = true
     }
 
     override fun onCleared() {
