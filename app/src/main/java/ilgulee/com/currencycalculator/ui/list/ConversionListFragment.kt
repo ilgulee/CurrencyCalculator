@@ -15,9 +15,10 @@ import ilgulee.com.currencycalculator.databinding.FragmentConversionListBinding
 
 class ConversionListFragment : Fragment() {
 
-    private val viewModel: ConversionListViewModel by lazy {
-        ViewModelProviders.of(this).get(ConversionListViewModel::class.java)
-    }
+    //    private val viewModel: ConversionListViewModel by lazy {
+//        ViewModelProviders.of(this).get(ConversionListViewModel::class.java)
+//    }
+    private lateinit var viewModel: ConversionListViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,6 +31,10 @@ class ConversionListFragment : Fragment() {
             container,
             false
         )
+        val application = requireNotNull(this.activity).application
+        val viewModelFactory = ConversionListViewModel.Factory(application)
+        viewModel =
+            ViewModelProviders.of(this, viewModelFactory).get(ConversionListViewModel::class.java)
         binding.conversionListViewModel = viewModel
         binding.setLifecycleOwner(this)
         val adapter = ConversionListAdapter()
