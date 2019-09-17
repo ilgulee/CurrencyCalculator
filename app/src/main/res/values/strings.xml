@@ -3,4 +3,12 @@
     <string name="title_conversion_list">Conversion List</string>
     <string name="title_rate_calculator">Rate Calculator</string>
     <string name="title_setting">Setting</string>
+    <string-array name="country_array">
+        <item>USD</item>
+        <item>JPY</item>
+        <item>CAD</item>
+        <item>CNY</item>
+        <item>KRW</item>
+        <item>EUR</item>
+    </string-array>
 </resources>

@@ -6,8 +6,8 @@ import androidx.room.*
 
 @Dao
 interface LiveQuoteDao {
-    @Query("select * from conversion_list where source = :source")
-    fun getLiveQuote(source: String): LiveData<LiveQuoteDatabase>
+    @Query("select * from conversion_list where id = $CURRENT_CURRENCY_ID")
+    fun getLiveQuote(): LiveData<LiveQuoteDatabase>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertLiveQuote(liveQuote: LiveQuoteDatabase)

@@ -12,9 +12,9 @@ import kotlinx.coroutines.launch
 import java.io.IOException
 
 class ConversionListViewModel(application: Application) : AndroidViewModel(application) {
-    private val source = "JPY"
-    private val liveQuoteRepository =
-        LiveQuoteRepository(LiveQuoteRoomDatabase.getInstance(application), source)
+    val liveQuoteRepository: LiveQuoteRepository by lazy {
+        LiveQuoteRepository(LiveQuoteRoomDatabase.getInstance(application))
+    }
     val response: LiveData<LiveQuote> = liveQuoteRepository.liveQuote
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
@@ -34,7 +34,7 @@ class ConversionListViewModel(application: Application) : AndroidViewModel(appli
         getLiveListFromRepository()
     }
 
-    private fun getLiveListFromRepository() {
+    fun getLiveListFromRepository() {
         coroutineScope.launch {
             try {
                 liveQuoteRepository.refreshLiveQuote()

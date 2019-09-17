@@ -1,5 +1,6 @@
 package ilgulee.com.currencycalculator.database
 
+import android.util.Log
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverter
@@ -9,16 +10,20 @@ import com.google.gson.reflect.TypeToken
 import ilgulee.com.currencycalculator.domain.LiveQuote
 import java.util.*
 
+const val CURRENT_CURRENCY_ID = 0
 @Entity(tableName = "conversion_list")
 @TypeConverters(Converter::class)
 data class LiveQuoteDatabase(
-    @PrimaryKey(autoGenerate = false)
     val source: String,
     val timestamp: Long,
     val quotes: Map<String, Float> = mutableMapOf()
-)
+) {
+    @PrimaryKey(autoGenerate = false)
+    var id: Int = CURRENT_CURRENCY_ID
+}
 
 fun LiveQuoteDatabase.asLiveQuoteDomainModel(): LiveQuote {
+    Log.d("dbToDomain", this.source)
     return LiveQuote(this.source, this.timestamp, this.quotes)
 }
 

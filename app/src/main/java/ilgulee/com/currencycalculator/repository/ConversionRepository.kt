@@ -10,18 +10,18 @@ import ilgulee.com.currencycalculator.network.CurrencyLayerApiObject
 import ilgulee.com.currencycalculator.network.asLiveQuoteDatabaseModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 
-class LiveQuoteRepository(private val database: LiveQuoteRoomDatabase, private val source: String) {
+class LiveQuoteRepository(private val database: LiveQuoteRoomDatabase) {
 
-    val liveQuote: LiveData<LiveQuote> = Transformations
-        .map(database.liveQuoteDao.getLiveQuote(source)) {
-            it.asLiveQuoteDomainModel()
+    var source: String = "USD"
+
+    var liveQuote: LiveData<LiveQuote> = Transformations
+        .map(database.liveQuoteDao.getLiveQuote()) {
+            it?.asLiveQuoteDomainModel()
         }
 
     suspend fun refreshLiveQuote() {
         withContext(Dispatchers.IO) {
-            Timber.d("refresh liveQuote is called");
             val liveQuote =
                 CurrencyLayerApiObject.currencyLayerApiService.getLiveList(KEY, source).await()
             database.liveQuoteDao.insertLiveQuote(liveQuote.asLiveQuoteDatabaseModel())
