@@ -13,9 +13,23 @@ interface LiveQuoteDao {
     fun insertLiveQuote(liveQuote: LiveQuoteDatabase)
 }
 
-@Database(entities = [LiveQuoteDatabase::class], version = 1, exportSchema = false)
+@Dao
+interface CurrencyListDao {
+    @Query("select * from currency_list where id = $CURRENT_CURRENCY_ID")
+    fun getCurrencyList(): LiveData<CurrencyListDatabase>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertCurrencyList(currencyList: CurrencyListDatabase)
+}
+
+@Database(
+    entities = [LiveQuoteDatabase::class, CurrencyListDatabase::class],
+    version = 1,
+    exportSchema = false
+)
 abstract class LiveQuoteRoomDatabase : RoomDatabase() {
     abstract val liveQuoteDao: LiveQuoteDao
+    abstract val currencyListDao: CurrencyListDao
 
     companion object {
         @Volatile

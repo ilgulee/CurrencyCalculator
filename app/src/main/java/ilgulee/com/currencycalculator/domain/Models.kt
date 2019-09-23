@@ -1,7 +1,12 @@
 package ilgulee.com.currencycalculator.domain
 
 data class LiveQuote(
-    val source: String,
-    val timestamp: Long,
-    val quotes: Map<String, Float> = mutableMapOf()
+    val codeFrom: String,
+    val code: String,
+    val rate: Float
+)
+
+data class Currency(
+    val code: String,
+    val nameAndUnit: String
 )

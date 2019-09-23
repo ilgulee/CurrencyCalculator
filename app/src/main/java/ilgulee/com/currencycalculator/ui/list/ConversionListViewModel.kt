@@ -15,7 +15,37 @@ class ConversionListViewModel(application: Application) : AndroidViewModel(appli
     val liveQuoteRepository: LiveQuoteRepository by lazy {
         LiveQuoteRepository(LiveQuoteRoomDatabase.getInstance(application))
     }
-    val response: LiveData<LiveQuote> = liveQuoteRepository.liveQuote
+    private val liveQuoteResponse = liveQuoteRepository.liveQuote
+    val currencyListResponse = liveQuoteRepository.currencyList
+
+    val _code = MutableLiveData<String>()
+    val code: LiveData<String>
+        get() = _code
+
+    val _selectedItemPosition = MutableLiveData<Int>()
+    val selectedItemPosition: LiveData<Int>
+        get() = _selectedItemPosition
+
+    val newLiveQuoteResponse: LiveData<List<LiveQuote>> = transformWithInput()
+
+    fun transformWithInput(): LiveData<List<LiveQuote>> {
+        return Transformations.map(liveQuoteResponse) {
+            it?.let { calculatedWithUserInput(it) }
+        }
+    }
+
+    private fun calculatedWithUserInput(list: List<LiveQuote>): List<LiveQuote> {
+        return list.map { it.copy(rate = calculateFloat(it.rate, _input.value!!.toFloat())) }
+    }
+
+    private fun calculateFloat(rate: Float, input: Float): Float {
+        return rate * input
+    }
+
+    private var _input = MutableLiveData<Float>().apply { value = 1f }
+    val input: LiveData<Float>
+        get() = _input
+
     private var viewModelJob = Job()
     private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
@@ -31,10 +61,10 @@ class ConversionListViewModel(application: Application) : AndroidViewModel(appli
     init {
         _eventNetworkError.value = false
         _isNetworkErrorShown.value = false
-        getLiveListFromRepository()
+        getCurrencyListFromRepository()
     }
 
-    fun getLiveListFromRepository() {
+    fun getLiveQuoteFromRepository() {
         coroutineScope.launch {
             try {
                 liveQuoteRepository.refreshLiveQuote()
@@ -43,6 +73,24 @@ class ConversionListViewModel(application: Application) : AndroidViewModel(appli
             } catch (networkError: IOException) {
                 _eventNetworkError.value = true
             }
+        }
+    }
+
+    private fun getCurrencyListFromRepository() {
+        coroutineScope.launch {
+            try {
+                liveQuoteRepository.refreshCurrencyList()
+                _eventNetworkError.value = false
+                _isNetworkErrorShown.value = false
+            } catch (networkError: IOException) {
+                _eventNetworkError.value = true
+            }
+        }
+    }
+
+    fun getInputFromEditText(userInput: String) {
+        if (userInput.isNotEmpty()) {
+            _input.value = userInput.toFloat()
         }
     }
 

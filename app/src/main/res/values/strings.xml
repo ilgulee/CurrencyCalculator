@@ -3,6 +3,8 @@
     <string name="title_conversion_list">Conversion List</string>
     <string name="title_rate_calculator">Rate Calculator</string>
     <string name="title_setting">Setting</string>
+    <string name="input_amount_of_money">Input amount of money</string>
+    <string name="convert_to_all">Convert to all</string>
     <string-array name="country_array">
         <item>USD</item>
         <item>JPY</item>

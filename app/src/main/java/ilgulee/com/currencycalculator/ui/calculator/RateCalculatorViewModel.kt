@@ -37,7 +37,7 @@ class RateCalculatorViewModel : ViewModel() {
     private fun getConvert() {
         coroutineScope.launch {
             val deferredNetworkResponseConvertCurrencyObject = CurrencyLayerApiObject
-                .currencyLayerApiService.convertCurrency(KEY, source, destination, amount)
+                .currencyLayerApiService.convertCurrencyAsync(KEY, source, destination, amount)
             try {
                 val convertCurrency = deferredNetworkResponseConvertCurrencyObject.await()
                 _response.value =

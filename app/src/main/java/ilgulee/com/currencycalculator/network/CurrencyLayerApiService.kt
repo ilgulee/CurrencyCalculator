@@ -24,7 +24,7 @@ private val retrofit = Retrofit.Builder()
 interface CurrencyLayerApiService {
 
     @GET("convert")
-    fun convertCurrency(
+    fun convertCurrencyAsync(
         @Query("access_key") key: String,
         @Query("from") source: String,
         @Query("to") destination: String,
@@ -33,11 +33,18 @@ interface CurrencyLayerApiService {
     ): Deferred<NetworkResponseConvertCurrencyObject>
 
     @GET("live")
-    fun getLiveList(
+    fun getLiveAsync(
         @Query("access_key") key: String,
         @Query("source") source: String,
         @Query("format") format: Int = 1
-    ): Deferred<NetworkResponseLiveListObject>
+    ): Deferred<NetworkResponseLiveObject>
+
+    @GET("list")
+    fun getCurrencyListAsync(
+        @Query("access_key") key: String,
+        @Query("format") format: Int = 1
+    ): Deferred<NetworkResponseCurrencyListObject>
+
 }
 
 object CurrencyLayerApiObject {
