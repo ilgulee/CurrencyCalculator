@@ -26,9 +26,9 @@ class ConversionListAdapter : RecyclerView.Adapter<TextItemViewHolder>() {
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: TextItemViewHolder, position: Int) {
-        val items = data.toList()
+        val items = data
         val item = items[position]
-        holder.textView.text = "${item.codeFrom} ${item.code} ${item.rate}"
+        holder.textView.text = "${item.sourceFrom} ${item.toSource} ${item.rate}"
     }
 }
 

@@ -4,12 +4,12 @@ import com.squareup.moshi.Json
 import ilgulee.com.currencycalculator.database.CurrencyListDatabase
 import ilgulee.com.currencycalculator.database.LiveQuoteDatabase
 
-data class NetworkResponseCurrencyListObject(
+data class CurrencyListNetworkResponse(
     @Json(name = "currencies")
     val currencies: Map<String, String> = mutableMapOf()
 )
 
-data class NetworkResponseLiveObject(
+data class LiveQuoteNetworkResponse(
     @Json(name = "source")
     val source: String,
     @Json(name = "success")
@@ -20,11 +20,11 @@ data class NetworkResponseLiveObject(
     val quotes: Map<String, Float> = mutableMapOf()
 )
 
-fun NetworkResponseLiveObject.asLiveQuoteDatabaseModel(): LiveQuoteDatabase {
+fun LiveQuoteNetworkResponse.asLiveQuoteDatabaseModel(): LiveQuoteDatabase {
     return LiveQuoteDatabase(this.source, this.timestamp, this.quotes)
 }
 
-fun NetworkResponseCurrencyListObject.asCurrencyListDatabaseModel(): CurrencyListDatabase {
+fun CurrencyListNetworkResponse.asCurrencyListDatabaseModel(): CurrencyListDatabase {
     return CurrencyListDatabase(this.currencies)
 }
 

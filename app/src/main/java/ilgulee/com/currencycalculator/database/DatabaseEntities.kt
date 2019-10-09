@@ -25,16 +25,14 @@ data class CurrencyListDatabase(
 @Entity(tableName = "conversion_list")
 @TypeConverters(LiveQuoteConverter::class)
 data class LiveQuoteDatabase(
+    @PrimaryKey(autoGenerate = false)
     val source: String,
     val timestamp: Long,
     val quotes: Map<String, Float> = mutableMapOf()
-) {
-    @PrimaryKey(autoGenerate = false)
-    var id: Int = CURRENT_CURRENCY_ID
-}
+)
 
 fun CurrencyListDatabase.asCurrencyListDomainModel(): List<Currency> {
-    val temp = arrayListOf<Currency>()
+    val temp = mutableListOf<Currency>()
     this.currencies.map {
         val code = it.key
         val nameAndUnit = it.value
@@ -45,12 +43,13 @@ fun CurrencyListDatabase.asCurrencyListDomainModel(): List<Currency> {
 }
 
 fun LiveQuoteDatabase.asLiveQuoteDomainModel(): List<LiveQuote> {
-    val temp = arrayListOf<LiveQuote>()
+    val temp = mutableListOf<LiveQuote>()
     this.quotes.map {
-        val codeFrom = this.source
-        val codeTo = it.key.substring(3..5)
+        val sourceFrom = this.source
+        val toSource = it.key.substring(3..5)
         val rate = it.value
-        val liveQuote = LiveQuote(codeFrom, codeTo, rate)
+        val timeStamp = this.timestamp
+        val liveQuote = LiveQuote(sourceFrom, toSource, rate, timeStamp)
         temp.add(liveQuote)
     }
     return temp

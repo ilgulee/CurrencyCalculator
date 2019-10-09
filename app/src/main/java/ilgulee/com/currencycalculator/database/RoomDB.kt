@@ -1,13 +1,13 @@
 package ilgulee.com.currencycalculator.database
 
 import android.content.Context
-import androidx.lifecycle.LiveData
 import androidx.room.*
+import io.reactivex.Observable
 
 @Dao
 interface LiveQuoteDao {
-    @Query("select * from conversion_list where id = $CURRENT_CURRENCY_ID")
-    fun getLiveQuote(): LiveData<LiveQuoteDatabase>
+    @Query("select * from conversion_list where source = :source")
+    fun getLiveQuote(source: String): Observable<LiveQuoteDatabase>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertLiveQuote(liveQuote: LiveQuoteDatabase)
@@ -16,7 +16,7 @@ interface LiveQuoteDao {
 @Dao
 interface CurrencyListDao {
     @Query("select * from currency_list where id = $CURRENT_CURRENCY_ID")
-    fun getCurrencyList(): LiveData<CurrencyListDatabase>
+    fun getCurrencyListDatabase(): Observable<CurrencyListDatabase>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertCurrencyList(currencyList: CurrencyListDatabase)

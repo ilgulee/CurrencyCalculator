@@ -3,13 +3,9 @@ package ilgulee.com.currencycalculator.ui.calculator
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import ilgulee.com.currencycalculator.KEY
-import ilgulee.com.currencycalculator.network.CurrencyLayerApiObject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import java.io.IOException
 
 class RateCalculatorViewModel : ViewModel() {
     private val source = "USD"
@@ -31,25 +27,25 @@ class RateCalculatorViewModel : ViewModel() {
     init {
         _eventNetworkError.value = false
         _isNetworkErrorShown.value = false
-        getConvert()
+//        getConvert()
     }
 
-    private fun getConvert() {
-        coroutineScope.launch {
-            val deferredNetworkResponseConvertCurrencyObject = CurrencyLayerApiObject
-                .currencyLayerApiService.convertCurrencyAsync(KEY, source, destination, amount)
-            try {
-                val convertCurrency = deferredNetworkResponseConvertCurrencyObject.await()
-                _response.value =
-                    "Success: retrieved ${convertCurrency}"
-                _eventNetworkError.value = false
-                _isNetworkErrorShown.value = false
-            } catch (networkError: IOException) {
-                _response.value = "Failure: ${networkError.message}"
-                _eventNetworkError.value = true
-            }
-        }
-    }
+//    private fun getConvert() {
+//        coroutineScope.launch {
+//            val deferredNetworkResponseConvertCurrencyObject = CurrencyLayerApiObject
+//                .currencyLayerApiService.convertCurrencyAsync(KEY, source, destination, amount)
+//            try {
+//                val convertCurrency = deferredNetworkResponseConvertCurrencyObject.await()
+//                _response.value =
+//                    "Success: retrieved ${convertCurrency}"
+//                _eventNetworkError.value = false
+//                _isNetworkErrorShown.value = false
+//            } catch (networkError: IOException) {
+//                _response.value = "Failure: ${networkError.message}"
+//                _eventNetworkError.value = true
+//            }
+//        }
+//    }
 
     fun onNetworkErrorShown() {
         _isNetworkErrorShown.value = true

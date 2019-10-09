@@ -1,12 +1,13 @@
 package ilgulee.com.currencycalculator.domain
 
 data class LiveQuote(
-    val codeFrom: String,
-    val code: String,
-    val rate: Float
+    val sourceFrom: String,
+    val toSource: String,
+    var rate: Float,
+    val timeStamp: Long
 )
 
 data class Currency(
-    val code: String,
+    val source: String,
     val nameAndUnit: String
 )
